@@ -8,8 +8,12 @@ pipeline {
     }
     stage('build') {
       steps {
-        powershell 'python3 app.py'
         sh 'python3 app.py'
+      }
+    }
+    stage('archive') {
+      steps {
+        archiveArtifacts(allowEmptyArchive: true, artifacts: './res.tar')
       }
     }
   }
