@@ -9,6 +9,7 @@ pipeline {
     stage('build') {
       steps {
         powershell 'python3 app.py'
+        sh 'python3 app.py'
       }
     }
   }
