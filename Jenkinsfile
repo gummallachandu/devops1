@@ -14,6 +14,7 @@ pipeline {
     stage('archive') {
       steps {
         archiveArtifacts(allowEmptyArchive: true, artifacts: '*.py')
+        echo 'successfully executed'
       }
     }
   }
