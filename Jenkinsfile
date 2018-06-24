@@ -8,7 +8,7 @@ pipeline {
     }
     stage('build') {
       steps {
-        sh 'python3 app.py'
+        sh 'python3 app1.py'
       }
     }
     stage('archive') {
