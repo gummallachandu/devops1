@@ -13,7 +13,7 @@ pipeline {
     }
     stage('archive') {
       steps {
-        archiveArtifacts(allowEmptyArchive: true, artifacts: './res.tar')
+        archiveArtifacts(allowEmptyArchive: true, artifacts: './*.py')
       }
     }
   }
