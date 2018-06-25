@@ -1,5 +1,10 @@
 pipeline {
-  agent any
+  agent {
+    dockerfile {
+      filename 'todoapp'
+    }
+
+  }
   stages {
     stage('preperation') {
       steps {
