@@ -1,28 +1,48 @@
 # devops1
 This application simulates an AI-augmented Software Development Life Cycle (SDLC) with human-in-the-loop (HITL) checkpoints using a Streamlit UI. The process is divided into distinct workflow stages, each representing a real-world SDLC milestone.
 
-👥 User Roles
-Business User
-Uploads requirement documents and initiates the SDLC process.
+Autogen vs. CrewAI – Final Decision Rationale
+After evaluating both frameworks, we are in agreement to proceed with Autogen based on the following key considerations:
 
-Tech Reviewer (HITL)
-Reviews the outcomes of each stage — user stories, architecture, code — and approves or rejects with feedback.
+Linear Flow Execution
 
-UI Layout
-Main Panel (Center): Displays current workflow screen based on the user's role.
+Autogen handles linear workflows efficiently (validated by Eshwar).
 
-Right Panel: Tracks SDLC workflow progress with stage status indicators:
+While CrewAI is designed around linear task orchestration, Autogen’s conversational flow has proven to be equally effective.
 
-⏳ In Progress
+Iterative Flows Support
 
-🕓 Ready to Review
+Autogen successfully supports iterative workflows (also tested by Eshwar).
 
-✅ Completed
+CrewAI offers a dedicated Flow structure for iterative tasks, but Autogen’s flexibility achieves similar results without structural constraints.
 
-❌ Rejected
+Human-in-the-Loop (HITL) Integration
 
-Left Sidebar:
+Autogen’s UserProxyAgent enables seamless HITL involvement.
 
-Role toggle
+CrewAI presents some challenges in implementing dynamic human intervention.
 
-Chat assistant (mock query to AI agent)
+LangChain Integration
+
+Integration effort with LangChain is comparable in both frameworks.
+
+CrewAI has its own native toolkit for certain functionalities, but both can integrate with LangChain tools like Jira, Git, etc., with similar effort.
+
+📝 To-Do Tasks
+Figma Integration
+Integrate with Figma API to generate wireframes based on system or user requirements.
+
+System Architecture Diagram Generation
+Use Claude or Draw.io API to auto-generate architecture diagrams from textual descriptions.
+
+LangChain + Autogen Integration
+Connect Autogen agents with LangChain-powered tools for:
+
+Jira story creation
+
+Git operations
+
+Other DevOps/PM tools
+
+HITL Implementation & UI Finalization
+Implement Human-in-the-Loop via UserProxyAgent in Autogen, with Streamlit as the UI layer. Finalize the UI framework for the POC/demo.
