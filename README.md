@@ -1,48 +1,121 @@
-# devops1
-This application simulates an AI-augmented Software Development Life Cycle (SDLC) with human-in-the-loop (HITL) checkpoints using a Streamlit UI. The process is divided into distinct workflow stages, each representing a real-world SDLC milestone.
+SDLC AutoGen Project Structure and Best Practices
+Last updated: May 28, 2025
+Owner: SDLC Automation Team
 
-Autogen vs. CrewAI – Final Decision Rationale
-After evaluating both frameworks, we are in agreement to proceed with Autogen based on the following key considerations:
+Overview
+This document defines the standard folder structure, architectural guidelines, and best practices for developing scalable, maintainable, and production-ready SDLC automation applications using the AutoGen multi-agent framework.
 
-Linear Flow Execution
+The goal is to ensure consistency, clarity, and separation of concerns across all SDLC automation projects, enabling rapid development, robust testing, and efficient collaboration between frontend, backend, and tool/microservice teams.
 
-Autogen handles linear workflows efficiently (validated by Eshwar).
+1. Standard Project Structure
+text
+autogen-sdlc-poc/
+├── .env
+├── requirements.txt
+├── README.md
+├── logs/
+│   └── sdlc.log
+├── input/
+│   └── sample_requirements.txt
+├── src/
+│   ├── __init__.py
+│   ├── config/
+│   │   ├── __init__.py
+│   │   └── settings.py
+│   ├── logging_config.py
+│   ├── agents/
+│   │   ├── __init__.py
+│   │   ├── business_analyst_agent.py
+│   │   ├── developer_agent.py
+│   │   └── jira_agent.py
+│   ├── tools/
+│   │   ├── __init__.py
+│   │   ├── file_tools.py
+│   │   └── jira_tools.py
+│   ├── workflows/
+│   │   ├── __init__.py
+│   │   └── sdlc_workflow.py
+│   ├── backend/
+│   │   ├── __init__.py
+│   │   └── api.py
+│   ├── frontend/
+│   │   └── (optional: React, Vue, or Streamlit app)
+│   └── main.py
+├── tests/
+│   ├── __init__.py
+│   ├── test_agents.py
+│   ├── test_tools.py
+│   └── test_workflows.py
+2. Directory and File Roles
+Folder/File	Purpose
+.env	Environment variables and secrets (never commit to VCS).
+requirements.txt	Python dependencies, version-pinned for reproducibility.
+logs/	Centralized, rotating logs for debugging and audit.
+input/	Uploaded or sample requirements and test files.
+src/config/	Configuration management, environment loading, and settings.
+src/logging_config.py	Centralized logging configuration for file and console handlers.
+src/agents/	All AutoGen agent definitions (e.g., BA, Dev, Jira).
+src/tools/	All tool functions, decorated with @tool, registered with agents.
+src/workflows/	Orchestration scripts for multi-agent SDLC flows.
+src/backend/	API endpoints (FastAPI/Flask) for frontend/backend separation and workflow triggers.
+src/frontend/	(Optional) UI code (React, Vue, Streamlit, etc.).
+src/main.py	CLI or main entry for running orchestrations.
+tests/	Unit and integration tests for agents, tools, and workflows.
+3. Key Architectural Guidelines
+3.1. Separation of Concerns
+Frontend: Handles all user interaction, file upload, and display logic. Never contains business logic or secrets.
 
-While CrewAI is designed around linear task orchestration, Autogen’s conversational flow has proven to be equally effective.
+Backend: Orchestrates workflows, manages agent interactions, and exposes APIs for the frontend.
 
-Iterative Flows Support
+Tools: Each tool (e.g., file reader, Jira integration, LLM, search) is a standalone, testable Python function or microservice, registered with agents via @tool.
 
-Autogen successfully supports iterative workflows (also tested by Eshwar).
+3.2. Logging
+Use centralized, rotating logs (see src/logging_config.py).
 
-CrewAI offers a dedicated Flow structure for iterative tasks, but Autogen’s flexibility achieves similar results without structural constraints.
+Log all errors, warnings, and key workflow steps.
 
-Human-in-the-Loop (HITL) Integration
+Never log secrets or sensitive user data.
 
-Autogen’s UserProxyAgent enables seamless HITL involvement.
+3.3. Configuration
+Store all secrets and environment variables in .env and load them via src/config/settings.py.
 
-CrewAI presents some challenges in implementing dynamic human intervention.
+Never hardcode credentials or API keys.
 
-LangChain Integration
+3.4. Error Handling
+Use try/except in all tool and agent code.
 
-Integration effort with LangChain is comparable in both frameworks.
+Return clear, actionable error messages to the backend; backend decides what to expose to the frontend.
 
-CrewAI has its own native toolkit for certain functionalities, but both can integrate with LangChain tools like Jira, Git, etc., with similar effort.
+Use HTTP status codes and structured error responses in API endpoints.
 
-📝 To-Do Tasks
-Figma Integration
-Integrate with Figma API to generate wireframes based on system or user requirements.
+3.5. Testing
+Write unit tests for every tool and agent in tests/.
 
-System Architecture Diagram Generation
-Use Claude or Draw.io API to auto-generate architecture diagrams from textual descriptions.
+Add integration tests for workflows.
 
-LangChain + Autogen Integration
-Connect Autogen agents with LangChain-powered tools for:
+Use mocks for external APIs (e.g., Jira) in tests.
 
-Jira story creation
+3.6. Scalability & Microservices
+Heavy-lifting tools (e.g., LLMs, file parsers, Jira integration) can be split into separate microservices if needed.
 
-Git operations
+Orchestrate via backend APIs; use service-to-service authentication.
 
-Other DevOps/PM tools
+Use containerization (Docker) and orchestration (Kubernetes) for deployment.
 
-HITL Implementation & UI Finalization
-Implement Human-in-the-Loop via UserProxyAgent in Autogen, with Streamlit as the UI layer. Finalize the UI framework for the POC/demo.
+3.7. Human-in-the-Loop (HITL) & State Management
+Backend exposes endpoints for user approval/feedback (HITL).
+
+Use session IDs or tokens to track workflow state.
+
+Store transient state in backend memory or Redis; persist long-running state in a database if needed.
+
+Frontend (Streamlit or SPA) manages only UI state; backend is the source of truth.
+
+Summary Table
+Layer	Role	Example Tech
+Frontend	UI, user interaction	Streamlit, React, Vue
+Backend	API, agent orchestration	FastAPI, Flask
+Tools	Heavy-lifting, integrations	Python, LLM, REST APIs
+Logging	Centralized logs	Python logging, ELK
+Config	Env vars, settings	dotenv, pydantic
+Testing	Unit/integration tests	pytest, unittest
